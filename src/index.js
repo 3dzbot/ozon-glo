@@ -84,7 +84,6 @@ function addCart() {
     }
 }
 
-
 //конец добавления товара в корзину
 
 //фильтра акции
@@ -98,38 +97,39 @@ function actionPage(){
     const search = document.querySelector('.search-wrapper_input');
     const searchBtn = document.querySelector('.search-btn');
 
-    //фильтр по акции
-    discountCheckbox.addEventListener('click', ()=>{
-        cards.forEach((card)=>{
-            if(discountCheckbox.checked){
-                if(!card.querySelector('.card-sale')){
-                    // card.parentNode.style.display = 'none';
-                    card.parentNode.remove();
-                }
-            } else {
-                // card.parentNode.style.display = '';
-                goods.appendChild(card.parentNode);
-            }
-        })
-    })
-//фильтр по ценен
+    discountCheckbox.addEventListener('click', filter )
+    min.addEventListener('change', filter)
+    max.addEventListener('change', filter)
 
-    min.addEventListener('change', filterPrice)
-    max.addEventListener('change', filterPrice)
+    // function filterPrice(){
+    //     cards.forEach((card)=>{
+    //         const cardPrice = card.querySelector('.card-price');
+    //         const price = parseFloat(cardPrice.textContent);
+            
+    //         if((min.value && price < min.value) || (max.value && price > max.value)){
+    //             card.parentNode.remove();
+    //         } else {
+    //             goods.appendChild(card.parentNode);
+    //         }
+    //     })
+    // }
 
-    function filterPrice(){
+    function filter(){
         cards.forEach((card)=>{
             const cardPrice = card.querySelector('.card-price');
             const price = parseFloat(cardPrice.textContent);
-            
-            if((min.value && price < min.value) || (max.value && price > max.value)){
-                card.parentNode.remove();
-            } else {
-                goods.appendChild(card.parentNode);
-            }
-        })
-    }
+            const discount = card.querySelector('.card-sale');
 
+            if((min.value && price < min.value) || (max.value && price > max.value)){
+                card.parentNode.style.display = 'none';
+            } else if (discountCheckbox.checked && !discount){
+                card.parentNode.style.display = 'none';
+            } else {
+                card.parentNode.style.display = '';
+
+            }
+        });
+    }
 //поиск
 
     searchBtn.addEventListener('click', ()=>{
@@ -150,7 +150,93 @@ function actionPage(){
 
 //конец фильтр акции
 
-toggleCheckbox()
-toggleCart()
-addCart()
-actionPage() 
+//получение данных с сервера
+
+function getData(){
+    const goodsWrapper = document.querySelector('.goods');
+//fetch API - запрос на сервер 
+    return fetch('../db/db.json')   //add return for .then on getData()
+    .then((response)=>{         //callback with objData (response)
+        if(response.ok){            //.ok true/false
+            return response.json();
+        } else {
+            throw new Error ('Данные не были получены, ошибка: ' + response.status);  //перехват ошибки
+        }
+    })
+    .then((data)=> {
+            return data;        //add return for .then on getData()
+        }
+    )
+    .catch((err)=>{
+        console.warn(err)
+        goodsWrapper.innerHTML = '<div style="color: red;">Упс, что-то пошло не так!</div>';
+    }); //перехват ошибок
+}
+
+//выводим карточки товара
+function renderCards(data){
+    const goodsWrapper = document.querySelector('.goods');
+    data.goods.forEach((good)=>{
+        const card = document.createElement('div');
+        card.className = 'col-12 col-md-6 col-lg-4 col-xl-3'
+        card.innerHTML = `							
+        <div class="card" data-category="${good.category}">
+            ${good.sale ? '<div class="card-sale">🔥Hot Sale🔥</div>' : ''}
+            <div class="card-img-wrapper">
+                <span class="card-img-top"
+                    style="background-image: url('${good.img}')"></span>
+            </div>
+            <div class="card-body justify-content-between">
+                <div class="card-price" style="${good.sale ? 'color: red' : ''}">${good.price} ₽</div>
+                <h5 class="card-title">${good.title}</h5>
+                <button class="btn btn-primary">В корзину</button>
+            </div>
+        </div>
+        `;
+        goodsWrapper.appendChild(card);
+    })
+}
+//конец получения данных
+
+function renderCatalog(){
+    const cards = document.querySelectorAll('.goods .card');
+    const categories = new Set();
+    const catalogList = document.querySelector('.catalog-list');
+    const catalogBtn = document.querySelector('.catalog-button');
+    const catalogWrapper = document.querySelector('.catalog');
+    cards.forEach((card)=>{
+        categories.add(card.dataset.category)
+    });
+
+    categories.forEach((item)=>{
+        const li = document.createElement('li');
+        li.textContent = item;
+        catalogList.appendChild(li);
+    });
+    catalogBtn.addEventListener('click', (event)=>{
+        if(catalogWrapper.style.display){
+            catalogWrapper.style.display = '';
+        } else {
+            catalogWrapper.style.display = 'block';
+        }
+        if(event.target.tagName ==='LI'){
+            cards.forEach((card)=>{
+                if(card.dataset.category === event.target.textContent){
+                    card.parentNode.style.display = '';
+                } else {
+                    card.parentNode.style.display = 'none';
+                }
+            })
+        }
+    })
+}
+
+
+getData().then((data)=>{
+    renderCards(data);
+    toggleCheckbox();
+    toggleCart();
+    addCart();
+    actionPage();
+    renderCatalog()
+});
