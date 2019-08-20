@@ -1,4 +1,4 @@
-'use strict'
+'use strict';
 //<----checkbox---->
 
 function toggleCheckbox() {
@@ -28,11 +28,11 @@ function toggleCart() {
     btnCart.addEventListener('click', () => {
         modalCart.style.display = 'flex';
         document.body.style.overflow = 'hidden'; //отключили скроллинг окна!
-    })
+    });
     closeBtn.addEventListener('click', () => {
         modalCart.style.display = 'none';
         document.body.style.overflow = '';
-    })
+    });
 }
 
 
@@ -58,21 +58,21 @@ function addCart() {
             removeBtn.addEventListener('click', () => {
                 cardClone.remove();
                 showData();
-            })
-        })
-    })
+            });
+        });
+    });
 
     function showData() {
         const cardsCart = cartWrapper.querySelectorAll('.card');
         const cardsPrice = cartWrapper.querySelectorAll('.card-price');
-        const cardTotal = document.querySelector('.cart-total span') //общая сумма в корзине
+        const cardTotal = document.querySelector('.cart-total span'); //общая сумма в корзине
         countGoods.textContent = cardsCart.length; //вставка текста внутри блока(elem)
 
         let sum = 0;
         cardsPrice.forEach((elem) => {
-            let price = parseFloat(elem.textContent)
+            let price = parseFloat(elem.textContent);
             sum += price;
-        })
+        });
 
         cardTotal.textContent = sum;
 
@@ -97,22 +97,9 @@ function actionPage(){
     const search = document.querySelector('.search-wrapper_input');
     const searchBtn = document.querySelector('.search-btn');
 
-    discountCheckbox.addEventListener('click', filter )
-    min.addEventListener('change', filter)
-    max.addEventListener('change', filter)
-
-    // function filterPrice(){
-    //     cards.forEach((card)=>{
-    //         const cardPrice = card.querySelector('.card-price');
-    //         const price = parseFloat(cardPrice.textContent);
-            
-    //         if((min.value && price < min.value) || (max.value && price > max.value)){
-    //             card.parentNode.remove();
-    //         } else {
-    //             goods.appendChild(card.parentNode);
-    //         }
-    //     })
-    // }
+    discountCheckbox.addEventListener('click', filter );
+    min.addEventListener('change', filter);
+    max.addEventListener('change', filter);
 
     function filter(){
         cards.forEach((card)=>{
@@ -133,8 +120,7 @@ function actionPage(){
 //поиск
 
     searchBtn.addEventListener('click', ()=>{
-        const searchText = new RegExp(search.value.trim(), 'i');        //search.value  //trim - обрезка пробелов в начале и конце
-        console.log(searchText)
+        const searchText = new RegExp(search.value.trim(), 'i');//search.value//trim - обрезка пробелов в начале и конце
         cards.forEach((card)=>{
             const title = card.querySelector('.card-title');
             if(!searchText.test(title.textContent)){                     //test - return true or false
@@ -142,10 +128,9 @@ function actionPage(){
             } else {
                 card.parentNode.style.display = '';
             }
-        })
+        });
         search.value = '';
-    })
-
+    });
 }
 
 //конец фильтр акции
@@ -168,7 +153,7 @@ function getData(){
         }
     )
     .catch((err)=>{
-        console.warn(err)
+        console.warn(err);
         goodsWrapper.innerHTML = '<div style="color: red;">Упс, что-то пошло не так!</div>';
     }); //перехват ошибок
 }
@@ -178,7 +163,7 @@ function renderCards(data){
     const goodsWrapper = document.querySelector('.goods');
     data.goods.forEach((good)=>{
         const card = document.createElement('div');
-        card.className = 'col-12 col-md-6 col-lg-4 col-xl-3'
+        card.className = 'col-12 col-md-6 col-lg-4 col-xl-3';
         card.innerHTML = `							
         <div class="card" data-category="${good.category}">
             ${good.sale ? '<div class="card-sale">🔥Hot Sale🔥</div>' : ''}
@@ -194,7 +179,7 @@ function renderCards(data){
         </div>
         `;
         goodsWrapper.appendChild(card);
-    })
+    });
 }
 //конец получения данных
 
@@ -205,7 +190,7 @@ function renderCatalog(){
     const catalogBtn = document.querySelector('.catalog-button');
     const catalogWrapper = document.querySelector('.catalog');
     cards.forEach((card)=>{
-        categories.add(card.dataset.category)
+        categories.add(card.dataset.category);
     });
 
     categories.forEach((item)=>{
@@ -226,9 +211,9 @@ function renderCatalog(){
                 } else {
                     card.parentNode.style.display = 'none';
                 }
-            })
+            });
         }
-    })
+    });
 }
 
 
@@ -238,5 +223,5 @@ getData().then((data)=>{
     toggleCart();
     addCart();
     actionPage();
-    renderCatalog()
+    renderCatalog();
 });
