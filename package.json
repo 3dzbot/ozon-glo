@@ -1,0 +1,24 @@
+{
+  "name": "ozone",
+  "version": "1.0.0",
+  "description": "ozone-store",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/3dzbot/ozon-glo.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/3dzbot/ozon-glo/issues"
+  },
+  "homepage": "https://github.com/3dzbot/ozon-glo#readme",
+  "devDependencies": {
+    "webpack": "^4.39.2",
+    "webpack-cli": "^3.3.7"
+  }
+}
