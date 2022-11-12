@@ -19,6 +19,6 @@
   "homepage": "https://github.com/3dzbot/ozon-glo#readme",
   "devDependencies": {
     "webpack": "^4.39.2",
-    "webpack-cli": "^3.3.7"
+    "webpack-cli": "^3.3.12"
   }
 }
